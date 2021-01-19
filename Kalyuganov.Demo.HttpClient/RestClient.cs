@@ -57,6 +57,21 @@ namespace Kalyuganov.Demo.Http
             return result;
         }
 
+        // return await _client.Put<User>(domain, endpoint, patch);
+        public async Task<T> Put<T>(string serviceUrl, string endpoint, T patch)
+        {
+            var httpRequest = new HttpRequestMessage(HttpMethod.Put, $"{serviceUrl}/{endpoint}");
+
+            string body = JsonConvert.SerializeObject(patch);
+
+            httpRequest.Content = new StringContent(body, Encoding.UTF8, "application/json");
+            var response = await Send(httpRequest);
+            var stringResult = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<T>(stringResult);
+
+            return result;
+        }
+
         // return await _client.Put<User, UserPatch>(domain, endpoint, patch);
         public async Task<R> Put<R, T>(string serviceUrl, string endpoint, T patch)
         {
